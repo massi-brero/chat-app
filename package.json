@@ -1,0 +1,19 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "Chat App",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "author": "massi.brero@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "eslint": "^7.22.0",
+    "express": "^4.17.1",
+    "hbs": "^4.1.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^4.0.0"
+  }
+}
