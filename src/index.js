@@ -8,7 +8,7 @@ const server = http.createServer(app)
 const io = socketio(server)
 
 const hbs = require('hbs')
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5500
 const publicDir = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
 
@@ -21,17 +21,22 @@ app.get('', (req, res) => {
   res.render('index')
 })
 
-let count = 0
-
 io.on('connection', (socket) => {
   console.log('new websocket connection...')
+  socket.broadcast.emit('message', 'A new user has joined')
 
-  socket.emit('countUpdated', count)
+  socket.on('sendMessage', (message, callback) => {
+    io.emit('message', message)
+    callback(true)
+  })
 
-  socket.on('increment', () => {
-    count++
-    //socket.emit('countUpdated', count)
-    io.emit('countUpdated', count)
+  socket.on('sendLocation', (location) => {
+    const url = 'https://google.com/maps?q='
+    socket.broadcast.emit('message', `${url}${location.lat},${location.long}`)
+  })
+
+  socket.on('disconnect', () => {
+    io.emit('message', 'A user has left.')
   })
 })
 
