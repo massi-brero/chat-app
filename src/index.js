@@ -11,6 +11,7 @@ const hbs = require('hbs')
 const port = process.env.PORT || 5500
 const publicDir = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
+const Filter = require('bad-words')
 
 //app.use(express.json())
 app.set('views', viewsPath)
@@ -26,13 +27,19 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('message', 'A new user has joined')
 
   socket.on('sendMessage', (message, callback) => {
-    io.emit('message', message)
-    callback(true)
+    const filter = new Filter()
+    if (!filter.isProfane(message)) {
+      io.emit('message', message)
+      callback(true)
+    }
+
+    callback(false)
   })
 
-  socket.on('sendLocation', (location) => {
+  socket.on('sendLocation', (location, callback) => {
     const url = 'https://google.com/maps?q='
     socket.broadcast.emit('message', `${url}${location.lat},${location.long}`)
+    callback(true)
   })
 
   socket.on('disconnect', () => {

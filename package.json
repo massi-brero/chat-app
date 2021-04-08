@@ -10,6 +10,7 @@
   "author": "massi.brero@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "bad-words": "^3.0.4",
     "eslint": "^7.22.0",
     "express": "^4.17.1",
     "hbs": "^4.1.1",
