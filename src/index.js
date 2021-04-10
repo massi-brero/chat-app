@@ -7,7 +7,7 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
-const hbs = require('hbs')
+// const hbs = require('hbs')
 const port = process.env.PORT || 5500
 const publicDir = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
@@ -15,7 +15,7 @@ const Filter = require('bad-words')
 
 //app.use(express.json())
 app.set('views', viewsPath)
-app.set('view engine', 'hbs')
+//app.set('view engine', 'html')
 app.use(express.static(publicDir))
 
 app.get('', (req, res) => {

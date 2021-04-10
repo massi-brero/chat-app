@@ -7,6 +7,9 @@ const $messageOutput = document.querySelector('#messageOutput')
 const $locationBtn = document.querySelector('#send-location')
 const $submitBtn = document.querySelector('#submit-btn')
 
+// templates
+const messageTemplate = document.querySelector('#message-template').innerHTML
+
 $form.addEventListener('submit', (e) => {
   e.preventDefault()
   $submitBtn.setAttribute('disabled', 'disabled')
@@ -46,5 +49,9 @@ $locationBtn.addEventListener('click', () => {
 })
 
 socket.on('message', (message) => {
-  $messageOutput.textContent = message
+  //$messageOutput.textContent = message
+  const html = Mustache.render(messageTemplate, {
+    message,
+  })
+  $messageOutput.insertAdjacentHTML('beforeend', html)
 })
