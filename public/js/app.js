@@ -9,6 +9,7 @@ const $submitBtn = document.querySelector('#submit-btn')
 
 // templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
+const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
 $form.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -40,18 +41,31 @@ $locationBtn.addEventListener('click', () => {
       },
       (res) => {
         $locationBtn.removeAttribute('disabled')
-        $messageOutput.textContent = res
-          ? 'Location shared'
-          : 'there was a problem sharing your location'
+        const text = res
+          ? '# Location shared # #'
+          : '# there was a problem sharing your location # #'
+        addToMessages(messageTemplate, { text })
       }
     )
   })
 })
 
-socket.on('message', (message) => {
-  //$messageOutput.textContent = message
-  const html = Mustache.render(messageTemplate, {
-    message,
-  })
-  $messageOutput.insertAdjacentHTML('beforeend', html)
+socket.on('message', (res) => {
+  addToMessages(messageTemplate, res)
 })
+
+socket.on('locationMessage', (res) => {
+  addToMessages(locationMessageTemplate, res)
+})
+
+addToMessages = (template, content) => {
+
+  content.createdAt = content.createdAt 
+    ? dayjs(content.createdAt).format('HH:mm:ss') 
+    : ''
+
+  $messageOutput.insertAdjacentHTML(
+    'beforeend',
+    Mustache.render(template, content))
+}
+

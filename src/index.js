@@ -2,6 +2,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const path = require('path')
+const {generateMessage} = require('./utils/messages')
 
 const app = express()
 const server = http.createServer(app)
@@ -22,14 +23,17 @@ app.get('', (req, res) => {
   res.render('index')
 })
 
-io.on('connection', (socket) => {
+io.on('connection', (socket) => { 
   console.log('new websocket connection...')
-  socket.broadcast.emit('message', 'A new user has joined')
+
+  socket.emit('message', generateMessage('Welcome'))
+
+  socket.broadcast.emit('message', generateMessage('A new user has joined'))
 
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter()
     if (!filter.isProfane(message)) {
-      io.emit('message', message)
+      io.emit('message', generateMessage(message))
       callback(true)
     }
 
@@ -38,12 +42,12 @@ io.on('connection', (socket) => {
 
   socket.on('sendLocation', (location, callback) => {
     const url = 'https://google.com/maps?q='
-    socket.broadcast.emit('message', `${url}${location.lat},${location.long}`)
+    socket.broadcast.emit('locationMessage', generateMessage(`${url}${location.lat},${location.long}`))
     callback(true)
   })
 
   socket.on('disconnect', () => {
-    io.emit('message', 'A user has left.')
+    io.emit('message', generateMessage('A user has left.'))
   })
 })
 
