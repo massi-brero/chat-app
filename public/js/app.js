@@ -3,7 +3,7 @@ const socket = io()
 // Elements
 const $form = document.querySelector('form')
 const $input = $form.querySelector('#messageInput')
-const $messageOutput = document.querySelector('#messageOutput')
+const $messageOutput = document.querySelector('#messages')
 const $locationBtn = document.querySelector('#send-location')
 const $submitBtn = document.querySelector('#submit-btn')
 
@@ -42,8 +42,8 @@ $locationBtn.addEventListener('click', () => {
       (res) => {
         $locationBtn.removeAttribute('disabled')
         const text = res
-          ? '# Location shared # #'
-          : '# there was a problem sharing your location # #'
+          ? '## Location shared ##'
+          : '## there was a problem sharing your location ##'
         addToMessages(messageTemplate, { text })
       }
     )
