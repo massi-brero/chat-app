@@ -6,6 +6,7 @@ const $input = $form.querySelector('#messageInput');
 const $messageOutput = document.querySelector('#messages');
 const $locationBtn = document.querySelector('#send-location');
 const $submitBtn = document.querySelector('#submit-btn');
+const $sidebar = document.querySelector('#sidebar');
 
 // Options
 const { username, room } = Qs.parse(location.search, {
@@ -17,6 +18,7 @@ const messageTemplate = document.querySelector('#message-template').innerHTML;
 const locationMessageTemplate = document.querySelector(
     '#location-message-template'
 ).innerHTML;
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 $form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -66,7 +68,30 @@ socket.on('locationMessage', (res) => {
     addToMessages(locationMessageTemplate, res);
 });
 
-addToMessages = (template, content) => {
+socket.on('roomData', ({ room, users }) => {
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users,
+    });
+    $sidebar.innerHTML = html;
+});
+
+const autoScroll = () => {
+    const $newMessage = $messageOutput.lastElementChild;
+
+    const newMessageStyles = getComputedStyle($newMessage);
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+    const visibleHeight = $messageOutput.offsetHeight;
+    const containerHeight = $messageOutput.scrollHeight; // height of an element's content, including content not visible on the screen due to overflow
+    const scrollOffset = $messageOutput.scrollTop + visibleHeight; // scrollTop = distance from the element's top to its topmost visible content.
+
+    if (true) {
+    }
+};
+
+const addToMessages = (template, content) => {
     content.createdAt = content.createdAt
         ? dayjs(content.createdAt).format('HH:mm:ss')
         : '';
@@ -75,6 +100,12 @@ addToMessages = (template, content) => {
         'beforeend',
         Mustache.render(template, content)
     );
+    autoScroll();
 };
 
-socket.emit('join', { username, room });
+socket.emit('join', { username, room }, (error) => {
+    if (error) {
+        alert(error);
+        location.href = '/';
+    }
+});
