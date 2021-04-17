@@ -87,7 +87,7 @@ const autoScroll = () => {
     const containerHeight = $messageOutput.scrollHeight; // height of an element's content, including content not visible on the screen due to overflow
     const scrollOffset = $messageOutput.scrollTop + visibleHeight; // scrollTop = distance from the element's top to its topmost visible content.
 
-    if (true) {
+    if (containerHeight - newMessageHeight <= scrollOffset) {
     }
 };
 
