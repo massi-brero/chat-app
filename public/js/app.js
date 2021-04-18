@@ -84,10 +84,14 @@ const autoScroll = () => {
     const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
 
     const visibleHeight = $messageOutput.offsetHeight;
-    const containerHeight = $messageOutput.scrollHeight; // height of an element's content, including content not visible on the screen due to overflow
-    const scrollOffset = $messageOutput.scrollTop + visibleHeight; // scrollTop = distance from the element's top to its topmost visible content.
+    // height of an element's content, including content not visible on the screen due to overflow
+    const containerHeight = $messageOutput.scrollHeight;
+    // scrollTop = distance from the element's top to its topmost visible content.
+    const scrollOffset = $messageOutput.scrollTop + visibleHeight;
 
+    // if we already were at the bottom, before the new message was added
     if (containerHeight - newMessageHeight <= scrollOffset) {
+        $messageOutput.scrollTop = $messageOutput.scrollHeight;
     }
 };
 
